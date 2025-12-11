@@ -6,6 +6,7 @@
   "description": "Manage and toggle feature flags from Chrome DevTools in real time.",
   "author": "wizardnet972",
   "homepage_url": "https://github.com/wizardnet972/ff-devtools",
+  "privacy_policy": "https://github.com/wizardnet972/ff-devtools/blob/main/apps/ff-devtools-ui/PRIVACY_POLICY.md",
   "permissions": [
     "tabs"
   ],
