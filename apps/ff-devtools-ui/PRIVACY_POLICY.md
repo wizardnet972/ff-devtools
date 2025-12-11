@@ -1,10 +1,10 @@
-# Privacy Policy for Feature Flag Manager
+# Privacy Policy for Feature Flags Devtools
 
 **Last Updated:** December 11, 2024
 
 ## Overview
 
-Feature Flag Manager is a Chrome extension that helps developers manage feature flags directly from Chrome DevTools. This privacy policy explains how we handle your data.
+Feature Flags Devtools is a Chrome extension that helps developers manage feature flags directly from Chrome DevTools. This privacy policy explains how we handle your data.
 
 ## Data Collection
 

@@ -15,7 +15,7 @@ type FilterType = 'all' | 'enabled' | 'disabled' | 'overrides';
   styleUrl: './app.css'
 })
 export class App {
-  title = 'Feature Flags Manager';
+  title = 'Feature Flags Devtools';
   
   public searchQuery = signal<string>('');
   public filterType = signal<FilterType>('all');
