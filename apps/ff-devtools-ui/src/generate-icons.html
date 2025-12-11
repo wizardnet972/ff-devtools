@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Icon Generator</title>
+</head>
+<body>
+  <h1>Feature Flag Manager - Icon Generator</h1>
+  <p>Right-click each icon below and "Save image as" to save as PNG:</p>
+  <div id="icons"></div>
+  
+  <script>
+    const sizes = [16, 48, 128];
+    const iconsDiv = document.getElementById('icons');
+    
+    sizes.forEach(size => {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      
+      const scale = size / 128;
+      
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#4F46E5');
+      gradient.addColorStop(1, '#2563EB');
+      
+      const radius = size * 0.1875;
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, size, size, radius);
+      ctx.fill();
+      
+      ctx.save();
+      ctx.scale(scale, scale);
+      
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.beginPath();
+      ctx.roundRect(24, 20, 80, 60, 4);
+      ctx.fill();
+      
+      ctx.fillStyle = '#4F46E5';
+      ctx.beginPath();
+      ctx.roundRect(32, 28, 64, 8, 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#9CA3AF';
+      ctx.beginPath();
+      ctx.roundRect(32, 40, 48, 6, 2);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.roundRect(32, 50, 56, 6, 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#10B981';
+      ctx.beginPath();
+      ctx.arc(88, 53, 8, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(84, 53);
+      ctx.lineTo(87, 56);
+      ctx.lineTo(92, 50);
+      ctx.stroke();
+      
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.beginPath();
+      ctx.roundRect(32, 88, 64, 40, 3);
+      ctx.fill();
+      
+      ctx.fillStyle = '#4F46E5';
+      ctx.beginPath();
+      ctx.roundRect(38, 94, 52, 6, 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#9CA3AF';
+      ctx.beginPath();
+      ctx.roundRect(38, 104, 40, 5, 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#EF4444';
+      ctx.beginPath();
+      ctx.arc(86, 106.5, 6, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(83, 106.5);
+      ctx.lineTo(86, 109.5);
+      ctx.lineTo(89, 103.5);
+      ctx.stroke();
+      
+      ctx.restore();
+      
+      const div = document.createElement('div');
+      div.style.margin = '20px';
+      div.style.display = 'inline-block';
+      div.style.textAlign = 'center';
+      
+      const label = document.createElement('p');
+      label.textContent = `${size}x${size}`;
+      label.style.margin = '5px 0';
+      
+      const img = document.createElement('img');
+      img.src = canvas.toDataURL('image/png');
+      img.style.border = '1px solid #ccc';
+      img.style.display = 'block';
+      
+      div.appendChild(label);
+      div.appendChild(img);
+      iconsDiv.appendChild(div);
+    });
+    
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+      this.beginPath();
+      this.moveTo(x + radius, y);
+      this.lineTo(x + width - radius, y);
+      this.quadraticCurveTo(x + width, y, x + width, y + radius);
+      this.lineTo(x + width, y + height - radius);
+      this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      this.lineTo(x + radius, y + height);
+      this.quadraticCurveTo(x, y + height, x, y + height - radius);
+      this.lineTo(x, y + radius);
+      this.quadraticCurveTo(x, y, x + radius, y);
+      this.closePath();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feature Flags</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-size: 13px;
+      color: #202124;
+      background: #fff;
+      overflow-x: hidden;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    body.dark {
+      background: #1a1a1a;
+      color: #e0e0e0;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      transition: background 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .stats-bar {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 12px 16px;
+    }
+
+    body.dark .stats-bar {
+      background: #2d2d2d;
+      border-bottom-color: #404040;
+    }
+
+    .stats-bar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #5f6368;
+    }
+
+    body.dark .stat-label {
+      color: #a0a0a0;
+    }
+
+    .stat-value {
+      font-size: 12px;
+      font-weight: 600;
+      background: #e8f0fe;
+      color: #1967d2;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .stat-value.enabled {
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    .stat-item.clickable {
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .stat-item.clickable:hover {
+      background: rgba(0,0,0,0.05);
+    }
+
+    .stat-item.clickable.active {
+      background: rgba(102, 126, 234, 0.1);
+      outline: 2px solid #667eea;
+      outline-offset: 2px;
+    }
+
+    .stat-item.clickable.active.enabled-active {
+      background: rgba(19, 115, 51, 0.1);
+      outline-color: #137333;
+    }
+
+    .search-container {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 13px;
+      background: white;
+      color: #202124;
+      transition: border-color 0.2s;
+    }
+
+    body.dark .search-input {
+      background: #2d2d2d;
+      border-color: #404040;
+      color: #e0e0e0;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+    }
+
+    body.dark .search-input:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: #5f6368;
+      pointer-events: none;
+    }
+
+    body.dark .search-icon {
+      color: #a0a0a0;
+    }
+
+    .filter-info {
+      font-size: 11px;
+      color: #5f6368;
+      margin-top: 4px;
+    }
+
+    body.dark .filter-info {
+      color: #a0a0a0;
+    }
+
+    body.dark .empty-state {
+      color: #a0a0a0;
+    }
+
+    body.dark .empty-state h3 {
+      color: #e0e0e0;
+    }
+
+    .footer-link {
+      color: #667eea;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover {
+      color: #5568d3;
+    }
+
+    body.dark .footer-link {
+      color: #818cf8;
+    }
+
+    body.dark .footer-link:hover {
+      color: #a5b4fc;
+    }
+
+    .refresh-btn {
+      background: white;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      color: #202124;
+    }
+
+    body.dark .refresh-btn {
+      background: #2d2d2d;
+      border-color: #404040;
+      color: #e0e0e0;
+    }
+
+    .refresh-btn:hover {
+      background: #f8f9fa;
+      border-color: #bdc1c6;
+    }
+
+    body.dark .refresh-btn:hover {
+      background: #3d3d3d;
+      border-color: #505050;
+    }
+
+    .refresh-btn:active {
+      background: #e8eaed;
+    }
+
+    body.dark .refresh-btn:active {
+      background: #2d2d2d;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 16px;
+      color: #5f6368;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #e8eaed;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 16px;
+      color: #5f6368;
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #202124;
+    }
+
+    .empty-state p {
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .category {
+      margin-bottom: 24px;
+    }
+
+    .category-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #202124;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    body.dark .category-title {
+      color: #e0e0e0;
+    }
+
+    .category-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: #667eea;
+      border-radius: 2px;
+    }
+
+    .flag-item {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+
+    body.dark .flag-item {
+      background: #2d2d2d;
+      border-color: #404040;
+    }
+
+    .flag-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-color: #dadce0;
+    }
+
+    body.dark .flag-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      border-color: #505050;
+    }
+
+    .flag-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .flag-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .flag-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #202124;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    body.dark .flag-name {
+      color: #e0e0e0;
+    }
+
+    .flag-key {
+      font-size: 11px;
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      color: #5f6368;
+      margin-bottom: 4px;
+    }
+
+    body.dark .flag-key {
+      color: #a0a0a0;
+    }
+
+    .flag-description {
+      font-size: 12px;
+      color: #5f6368;
+      line-height: 1.4;
+    }
+
+    body.dark .flag-description {
+      color: #a0a0a0;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .status-badge.enabled {
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    .status-badge.disabled {
+      background: #fce8e6;
+      color: #c5221f;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #dadce0;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .toggle-slider {
+      background-color: #667eea;
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    .error-state {
+      background: #fef7e0;
+      border: 1px solid #fbbc04;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px;
+      color: #7c4a00;
+    }
+
+    .error-state h3 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .error-state p {
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>Feature Flags Manager</h1>
+      <p>Manage your application feature flags</p>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" title="Cycle theme: System → Light → Dark">
+      <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      <span id="theme-label">System</span>
+    </button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stats-bar-top">
+      <div class="stats">
+        <div class="stat-item clickable" id="total-stat" data-filter="all">
+          <span class="stat-label">Total:</span>
+          <span class="stat-value" id="total-flags">0</span>
+        </div>
+        <div class="stat-item clickable enabled-active" id="enabled-stat" data-filter="enabled">
+          <span class="stat-label">Enabled:</span>
+          <span class="stat-value enabled" id="enabled-flags">0</span>
+        </div>
+          <div class="stat-item clickable" id="overrides-stat" data-filter="overrides">
+            <span class="stat-label">Overrides:</span>
+            <span class="stat-value" id="overrides-flags">0</span>
+          </div>
+      </div>
+      <button class="refresh-btn" id="refresh-btn" title="Reset local changes and reload flags from app">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.2"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+    <div class="search-container">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input
+        type="text"
+        id="search-input"
+        class="search-input"
+        placeholder="Search feature flags..."
+      />
+    </div>
+    <div class="filter-info" id="filter-info" style="display: none;"></div>
+  </div>
+
+  <div class="content" id="content">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading feature flags...</p>
+    </div>
+  </div>
+
+  <div class="stats-bar" style="margin-top: 4px; border-top: 1px solid #e0e0e0;">
+    <p class="text-xs" style="font-size: 11px; color: #5f6368; text-align: center;">
+      Made with ♥ by 
+      <a href="https://x.com/wizardnet972" target="_blank" rel="noopener noreferrer" class="footer-link">
+        wizardnet972
+      </a>
+    </p>
+  </div>
+
+  <script src="devtools-panel.js"></script>
+</body>
+</html>

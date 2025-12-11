@@ -1,3 +1,4 @@
+/// <reference types='vitest' />
 import { defineConfig } from 'vite';
 import angular from '@analogjs/vite-plugin-angular';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
@@ -5,10 +6,14 @@ import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 
 export default defineConfig(() => ({
   root: __dirname,
-  cacheDir: '../../node_modules/.vite/apps/ff-devtools-ui',
+  cacheDir: '../../node_modules/.vite/apps/ff-example-ui',
   plugins: [angular(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
+  // Uncomment this if you are using workers.
+  // worker: {
+  //  plugins: [ nxViteTsPaths() ],
+  // },
   test: {
-    name: 'ff-devtools-ui',
+    name: 'ff-example-ui',
     watch: false,
     globals: true,
     environment: 'jsdom',
@@ -16,7 +21,7 @@ export default defineConfig(() => ({
     setupFiles: ['src/test-setup.ts'],
     reporters: ['default'],
     coverage: {
-      reportsDirectory: '../../coverage/apps/ff-devtools-ui',
+      reportsDirectory: '../../coverage/apps/ff-example-ui',
       provider: 'v8' as const,
     },
   },

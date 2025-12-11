@@ -1,0 +1,49 @@
+const fs = require('fs');
+const path = require('path');
+
+function createIconSVG(size) {
+  const scale = size / 128;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="${size}" height="${size}">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="24" fill="url(#grad1)"/>
+  <g transform="translate(24, 20)">
+    <rect x="0" y="0" width="80" height="60" rx="4" fill="white" opacity="0.95"/>
+    <rect x="8" y="8" width="64" height="8" rx="2" fill="#4F46E5"/>
+    <rect x="8" y="20" width="48" height="6" rx="2" fill="#9CA3AF"/>
+    <rect x="8" y="30" width="56" height="6" rx="2" fill="#9CA3AF"/>
+    <circle cx="68" cy="33" r="8" fill="#10B981"/>
+    <path d="M 64 33 L 67 36 L 72 30" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g transform="translate(32, 88)">
+    <rect x="0" y="0" width="64" height="40" rx="3" fill="white" opacity="0.9"/>
+    <rect x="6" y="6" width="52" height="6" rx="2" fill="#4F46E5"/>
+    <rect x="6" y="16" width="40" height="5" rx="2" fill="#9CA3AF"/>
+    <circle cx="54" cy="18.5" r="6" fill="#EF4444"/>
+    <path d="M 51 18.5 L 54 21.5 L 57 15.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>`;
+}
+
+const iconsDir = path.join(__dirname, 'icons');
+if (!fs.existsSync(iconsDir)) {
+  fs.mkdirSync(iconsDir, { recursive: true });
+}
+
+const sizes = [16, 48, 128];
+sizes.forEach(size => {
+  const svg = createIconSVG(size);
+  const svgPath = path.join(iconsDir, `icon-${size}.svg`);
+  fs.writeFileSync(svgPath, svg);
+  console.log(`Created ${svgPath}`);
+});
+
+console.log('\nSVG icons created!');
+console.log('To convert to PNG, you can:');
+console.log('1. Use an online converter like https://cloudconvert.com/svg-to-png');
+console.log('2. Use ImageMagick: convert icon-16.svg icon-16.png');
+console.log('3. Use Inkscape: inkscape icon-16.svg --export-filename=icon-16.png');

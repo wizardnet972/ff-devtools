@@ -1,0 +1,40 @@
+<div class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+          Feature Flags Demo App
+        </h1>
+        <p class="text-gray-600">
+          This is a demo page to test the Feature Flags Chrome Extension
+        </p>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Instructions</h2>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li>Open the Feature Flags extension from your Chrome toolbar</li>
+          <li>
+            The extension should automatically detect the feature flags from
+            this page
+          </li>
+          <li>If not, click the "Refresh" button in the extension</li>
+          <li>
+            Toggle the feature flags in the extension to see them update here
+          </li>
+        </ol>
+      </div>
+
+      <app-feature-flags></app-feature-flags>
+
+      <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 class="text-sm font-semibold text-blue-800 mb-2">Console Logs</h3>
+        <p class="text-sm text-blue-700">
+          Open your browser console to see communication logs between the page
+          and extension.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

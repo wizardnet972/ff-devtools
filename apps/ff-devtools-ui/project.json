@@ -19,12 +19,68 @@
           {
             "glob": "**/*",
             "input": "apps/ff-devtools-ui/public"
+          },
+          {
+            "glob": "manifest.json",
+            "input": "apps/ff-devtools-ui/src",
+            "output": "/"
+          },
+          {
+            "glob": "content-script.js",
+            "input": "apps/ff-devtools-ui/src",
+            "output": "/"
+          },
+          {
+            "glob": "background.js",
+            "input": "apps/ff-devtools-ui/src",
+            "output": "/"
+          },
+          {
+            "glob": "devtools.html",
+            "input": "apps/ff-devtools-ui/src",
+            "output": "/"
+          },
+          {
+            "glob": "devtools.js",
+            "input": "apps/ff-devtools-ui/src",
+            "output": "/"
+          },
+          {
+            "glob": "devtools-panel.html",
+            "input": "apps/ff-devtools-ui/src",
+            "output": "/"
+          },
+          {
+            "glob": "devtools-panel.js",
+            "input": "apps/ff-devtools-ui/src",
+            "output": "/"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/ff-devtools-ui/src/icons",
+            "output": "/icons"
+          },
+          {
+            "glob": "favicon.svg",
+            "input": "apps/ff-devtools-ui/src",
+            "output": "/"
+          },
+          {
+            "glob": "favicon.ico",
+            "input": "apps/ff-devtools-ui/public",
+            "output": "/"
           }
         ],
         "styles": ["apps/ff-devtools-ui/src/styles.scss"]
       },
       "configurations": {
         "production": {
+          "optimization": {
+            "styles": {
+              "minify": true,
+              "inlineCritical": false
+            }
+          },
           "budgets": [
             {
               "type": "initial",
