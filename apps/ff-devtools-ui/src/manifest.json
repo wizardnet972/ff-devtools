@@ -1,21 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Feature Flags Devtools",
   "short_name": "FF Devtools",
-  "version": "1.0.0",
+  "name": "Feature Flags Devtools",
   "description": "Manage and toggle feature flags from Chrome DevTools in real time.",
+  "version": "1.0.3",
   "author": "wizardnet972",
+  "minimum_chrome_version": "102",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
   "homepage_url": "https://github.com/wizardnet972/ff-devtools",
-  "privacy_policy": "https://github.com/wizardnet972/ff-devtools/blob/main/apps/ff-devtools-ui/PRIVACY_POLICY.md",
-
-  "permissions": ["tabs", "storage"],
-
-  "host_permissions": [
-    "https://app.example.com/*",
-    "https://staging.app.example.com/*",
-    "http://localhost:4200/*"
-  ],
-
+  "permissions": [],
+  "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "index.html",
     "default_title": "Feature Flags Devtools",
@@ -25,33 +21,21 @@
       "128": "icons/icon-128.png"
     }
   },
-
   "icons": {
     "16": "icons/icon-16.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },
-
   "content_scripts": [
     {
-      "matches": [
-        "https://app.example.com/*",
-        "https://staging.app.example.com/*",
-        "http://localhost:4200/*"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["content-script.js"],
       "run_at": "document_start",
-      "all_frames": false
+      "all_frames": true
     }
   ],
-
   "background": {
     "service_worker": "background.js"
   },
-
-  "devtools_page": "devtools.html",
-
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
-  }
+  "devtools_page": "devtools.html"
 }
